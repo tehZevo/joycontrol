@@ -397,33 +397,33 @@ class IMUState:
         self.x = self.y = self.z = self.roll = self.pitch = self.yaw = 0
 
     def set_x(self, value):
-        if not 8000 <= value < 8000:
-            raise ValueError(f'Accelerometer values must be in [8000,8000)')
+        if not -8000 <= value < 8000:
+            raise ValueError(f'Accelerometer values must be in [-8000,8000)')
         self.x = value
 
     def set_y(self, value):
-        if not 8000 <= value < 8000:
-            raise ValueError(f'Accelerometer values must be in [8000,8000)')
+        if not -8000 <= value < 8000:
+            raise ValueError(f'Accelerometer values must be in [-8000,8000)')
         self.y = value
 
     def set_z(self, value):
-        if not 8000 <= value < 8000:
-            raise ValueError(f'Accelerometer values must be in [8000,8000)')
+        if not -8000 <= value < 8000:
+            raise ValueError(f'Accelerometer values must be in [-8000,8000)')
         self.z = value
 
     def set_roll(self, value):
-        if not 2000 <= value < 2000:
-            raise ValueError(f'Gyroscope values must be in [2000,2000)')
+        if not -2000 <= value < 2000:
+            raise ValueError(f'Gyroscope values must be in [-2000,2000)')
         self.roll = value
 
     def set_pitch(self, value):
-        if not 2000 <= value < 2000:
-            raise ValueError(f'Gyroscope values must be in [2000,2000)')
+        if not -2000 <= value < 2000:
+            raise ValueError(f'Gyroscope values must be in [-2000,2000)')
         self.pitch = value
 
     def set_yaw(self, value):
-        if not 2000 <= value < 2000:
-            raise ValueError(f'Gyroscope values must be in [2000,2000)')
+        if not -2000 <= value < 2000:
+            raise ValueError(f'Gyroscope values must be in [-2000,2000)')
         self.yaw = value
 
     def set_imu(self, x, y, z, roll, pitch, yaw):
