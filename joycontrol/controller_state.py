@@ -3,6 +3,7 @@ import asyncio
 from joycontrol import utils
 from joycontrol.controller import Controller
 from joycontrol.memory import FlashMemory
+from joycontrol.imu import construct_imu_frame
 
 
 class ControllerState:
@@ -14,6 +15,7 @@ class ControllerState:
         self._spi_flash = spi_flash
 
         self.button_state = ButtonState(controller)
+        self.imu_state = IMUState(controller)
 
         # create left stick state
         self.l_stick_state = self.r_stick_state = None
@@ -64,6 +66,8 @@ class ControllerState:
         Raises NotConnected exception if the connection was lost.
         """
         await self._protocol.send_controller_state()
+        #clear imu state after send so controller doesn't go WHEEEEEEEEEEE if no data is set
+        self.imu_state.zero_imu()
 
     async def connect(self):
         """
@@ -383,3 +387,61 @@ class StickState:
         byte_3 = self._v_stick >> 4
         assert all(0 <= byte <= 0xFF for byte in (byte_1, byte_2, byte_3))
         return bytes((byte_1, byte_2, byte_3))
+
+
+class IMUState:
+    def __init__(self, controller: Controller):
+        #TODO: handle flipping axes based on controller type (left/right joycon)
+        #   see: https://github.com/dekuNukem/Nintendo_Switch_Reverse_Engineering/blob/master/imu_sensor_notes.md
+        self.controller = controller
+        self.x = self.y = self.z = self.roll = self.pitch = self.yaw = 0
+
+    def set_x(self, value):
+        if not 8000 <= value < 8000:
+            raise ValueError(f'Accelerometer values must be in [8000,8000)')
+        self.x = value
+
+    def set_y(self, value):
+        if not 8000 <= value < 8000:
+            raise ValueError(f'Accelerometer values must be in [8000,8000)')
+        self.y = value
+
+    def set_z(self, value):
+        if not 8000 <= value < 8000:
+            raise ValueError(f'Accelerometer values must be in [8000,8000)')
+        self.z = value
+
+    def set_roll(self, value):
+        if not 2000 <= value < 2000:
+            raise ValueError(f'Gyroscope values must be in [2000,2000)')
+        self.roll = value
+
+    def set_pitch(self, value):
+        if not 2000 <= value < 2000:
+            raise ValueError(f'Gyroscope values must be in [2000,2000)')
+        self.pitch = value
+
+    def set_yaw(self, value):
+        if not 2000 <= value < 2000:
+            raise ValueError(f'Gyroscope values must be in [2000,2000)')
+        self.yaw = value
+
+    def set_imu(self, x, y, z, roll, pitch, yaw):
+        #TODO: confirm order
+        self.set_x(x)
+        self.set_y(y)
+        self.set_z(z)
+        self.set_roll(roll)
+        self.set_pitch(pitch)
+        self.set_yaw(yaw)
+
+    def zero_imu(self):
+        self.set_imu(0, 0, 0, 0, 0, 0)
+
+    def __bytes__(self):
+        #HACK: naively repeat single frame 3 times
+        #TODO: perhaps interpolate between previous values or allow each frame to be individually set (ew)
+        #TODO: check order
+        imu_frame = construct_imu_frame(self.x, self.y, self.z, self.roll, self.pitch, self.yaw)
+        imu_frames = imu_frame * 3
+        return bytes(imu_frames)
