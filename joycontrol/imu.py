@@ -1,6 +1,4 @@
 import numpy as np
-import pyautogui
-import time
 
 #mouse movement to joycon imu motion controls conversion
 #based on
