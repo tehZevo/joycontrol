@@ -103,18 +103,14 @@ class InputReport:
     def get_ack(self):
         return self.data[14]
 
-    def set_6axis_data(self, imu_data=None):
+    def set_6axis_data(self, imu_state):
         """
         Set accelerator and gyro of 0x30 input reports
-        IMU/6axis data is 36 bytes: 3 frames of x/y/z/roll/pitch/yaw (TODO: check order)
+        IMU/6axis data is 36 bytes: 3 frames of x/y/z/roll/pitch/yaw
         each value is int16le
         see https://github.com/dekuNukem/Nintendo_Switch_Reverse_Engineering/blob/master/imu_sensor_notes.md
         """
-        if imu_data is None:
-            imu_data = [0x00 for _ in range(36)]
-
-        for i in range(36):
-            self.data[14 + i] = imu_data[i]
+        self.data[14:50] = bytes(imu_state) if imu_state else bytes(36)
 
     def set_ir_nfc_data(self, data):
         if len(data) > 313:

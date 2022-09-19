@@ -152,7 +152,7 @@ class ControllerProtocol(BaseProtocol):
             if mode == 0x21:
                 pass # subcommand is set outside
             elif mode in [0x30, 0x31, 0x32, 0x33]:
-                input_report.set_6axis_data()
+                input_report.set_6axis_data(self._controller_state.imu_state)
 
             if mode == 0x31:
                 input_report.set_ir_nfc_data(self._mcu.get_data())
