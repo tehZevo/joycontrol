@@ -13,7 +13,7 @@ import numpy as np
 #3 sets of data are sent per report
 #each set contains 12 bytes, 2 each for accel x, y, z and gyro roll, pitch, yaw (i believe that's the correct order)
 
-MILLI_G_SCALE = 1/0.000244
+MILLI_G_SCALE = 1/0.244 #milli gs
 DPS_SCALE = 1/0.070
 
 def dps2bytes(dps):
