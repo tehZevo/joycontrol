@@ -171,7 +171,9 @@ class ControllerProtocol(BaseProtocol):
             input_report = self._generate_input_report()
             try:
                 await self._write(input_report)
-            except:
+            except Exception as e:
+                print(e)
+                print("Exception in _writer")
                 break
             # calculate delay
             self.send_delay = debug.get_delay(self.send_delay) #debug hook
