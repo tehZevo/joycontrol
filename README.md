@@ -1,5 +1,21 @@
 # joycontrol
 
+## tehZevo edit
+### What does it add over Poohl/mart1nro's joycontrol?
+*Tilt controls*
+```python
+ControllerState.imu_state. #...
+set_x(milli_gs)
+set_y(milli_gs)
+set_z(milli_gs)
+set_roll(degrees_per_sec)
+set_pitch(degrees_per_sec)
+set_yaw(degrees_per_sec)
+set_imu(x, y, z, roll, pitch, yaw)
+zero_imu()
+```
+
+
 Branch: master->amiibo_edits
 
 Emulate Nintendo Switch Controllers over Bluetooth.
