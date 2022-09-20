@@ -200,7 +200,8 @@ class InputReport:
         if _id == 0x21:
             return bytes(self.data[:51])
         elif _id == 0x30:
-            return bytes(self.data[:14])
+            # return bytes(self.data[:14])
+            return bytes(self.data[:51])
         elif _id == 0x31:
             return bytes(self.data[:363])
         else:
