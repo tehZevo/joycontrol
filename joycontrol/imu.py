@@ -18,13 +18,13 @@ DPS_SCALE = 1/0.070
 
 def dps2bytes(dps):
     dps = dps * DPS_SCALE
-    dps = np.clip(np.round(dps), -65536, 65535)
+    dps = np.clip(np.round(dps), -32768, 32767)
     dps = list(np.array([dps]).astype("<i2").tobytes())
     return dps
 
 def millig2bytes(millig):
     millig = millig * MILLI_G_SCALE
-    millig = np.clip(np.round(millig), -65536, 65535)
+    millig = np.clip(np.round(millig), -32768, 32767)
     millig = list(np.array([millig]).astype("<i2").tobytes())
     return millig
 
