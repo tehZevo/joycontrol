@@ -4,7 +4,7 @@ class _Request:
     def __init__(self, value, loop):
         self.value = value
         # self.future = loop.create_future()
-        self.future = asyncio.get_event_loop()
+        self.future = asyncio.get_event_loop().create_future()
 
 
 class MySemaphore(asyncio.Semaphore):
