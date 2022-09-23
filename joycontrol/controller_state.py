@@ -395,6 +395,7 @@ class IMUState:
         #   see: https://github.com/dekuNukem/Nintendo_Switch_Reverse_Engineering/blob/master/imu_sensor_notes.md
         self.controller = controller
         self.x = self.y = self.z = self.roll = self.pitch = self.yaw = 0
+        self.prev_data = None
 
     def set_x(self, value):
         if not -8000 <= value <= 8000:
@@ -439,9 +440,22 @@ class IMUState:
         self.set_imu(0, 0, 0, 0, 0, 0)
 
     def __bytes__(self):
-        #HACK: naively repeat single frame 3 times
-        #TODO: perhaps interpolate between previous values or allow each frame to be individually set (ew)
+        #HACK: naive interpolation
         #TODO: check order
-        imu_frame = construct_imu_frame(self.x, self.y, self.z, self.roll, self.pitch, self.yaw)
-        imu_frames = imu_frame * 3
-        return bytes(imu_frames)
+        cur_data = [self.x, self.y, self.z, self.roll, self.pitch, self.yaw]
+
+        if self.prev_data is None:
+            frames = [cur_data for _ in range(3)]
+        else:
+            prev_and_cur = list(zip(self.prev_data, cur_data))
+            frame_0 = [a + (b - a) * 0.33 for a, b in prev_and_cur]
+            frame_1 = [a + (b - a) * 0.66 for a, b in prev_and_cur]
+            frame_2 = [a + (b - a) * 1.00 for a, b in prev_and_cur]
+            frames = [frame_0, frame_1, frame_2]
+
+        # print(frames)
+        imu_frames = [construct_imu_frame(*frame) for frame in frames]
+        flat_frames = [b for _bytes in imu_frames for b in _bytes]
+
+        self.prev_data = cur_data
+        return bytes(flat_frames)
