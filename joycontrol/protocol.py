@@ -68,8 +68,8 @@ class ControllerProtocol(BaseProtocol):
             None: math.inf, # subcommands only
             0x3F: 1.0,
             0x21: math.inf, # shouldn't happen
-            0x30: 1/60, # this needs revising, but 120 seems too fast
-        #    0x30: 1/120 if self.controller == Controller.PRO_CONTROLLER else 1/60,
+            # 0x30: 1/60, # this needs revising, but 120 seems too fast
+            0x30: 1/120 if self.controller == Controller.PRO_CONTROLLER else 1/60,
             0x31: 1/60
         }
         self._input_report_wakeup = asyncio.Event()
